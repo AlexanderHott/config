@@ -3,6 +3,7 @@
   hosts: localhost
   connection: local
   become: true # sudo
+  become_user: "{{ lookup('env', 'USER') }}"
 
   tasks:
     - name: Install dependencies
@@ -14,6 +15,7 @@
     - name: Install cli programs
       ansible.builtin.package:
         name:
+          - fd-find
           - fzf
           - stow
 
@@ -28,20 +30,34 @@
       register: rustup_check
       ignore_errors: true
       changed_when: false
-      tags: 
+      tags:
         - rust
 
-    - name: Debug output of rustup_check
-      ansible.builtin.debug:
-        var: rustup_check
+    # - name: Debug output of rustup_check
+    #   ansible.builtin.debug:
+    #     var: rustup_check
 
     - name: Install Rustup if not installed
       ansible.builtin.command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
       when: rustup_check is not defined
       register: rustup_install_output
       changed_when: false
+      tags:
+        - rust
 
     - name: Print installation output
       ansible.builtin.debug:
         msg: "{{ rustup_install_output.stdout }}"
       when: rustup_install_output is defined and rustup_install_output.stdout is defined
+      tags:
+        - rust
+
+    - name: Install rust CLIs
+      when: rustup_check is defined
+      ansible.builtin.command:
+        argv:
+          - "{{ lookup('env', 'CARGO_HOME') }}/bin/cargo"
+          - "install"
+          - "eza"
+      changed_when: false
+
