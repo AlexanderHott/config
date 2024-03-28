@@ -20,7 +20,7 @@
     - name: Install latest neovim
       ansible.builtin.get_url:
         url: "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
-        dest: "~/.local/bin/nvim"
+        dest: "{{ lookup('env', 'HOME') }}/.local/bin/nvim"
         mode: "0755"
 
     - name: Check if Rustup is installed
