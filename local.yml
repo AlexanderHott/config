@@ -32,15 +32,15 @@
     - name: Debug output of rustup_check
       ansible.builtin.debug:
         var: rustup_check
-    #
-    # - name: Install Rustup if not installed
-    #   become: true
-    #   ansible.builtin.command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    #   when: rustup_check is not defined
-    #   register: rustup_install_output
-    #   change_when: false
-    #
-    # - name: Print installation output
-    #   ansible.builtin.debug:
-    #     msg: "{{ rustup_install_output.stdout }}"
-    #   when: rustup_install_output is defined and rustup_install_output.stdout is defined
+
+    - name: Install Rustup if not installed
+      become: true
+      ansible.builtin.command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      when: rustup_check is not defined
+      register: rustup_install_output
+      change_when: false
+
+    - name: Print installation output
+      ansible.builtin.debug:
+        msg: "{{ rustup_install_output.stdout }}"
+      when: rustup_install_output is defined and rustup_install_output.stdout is defined
