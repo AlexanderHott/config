@@ -15,7 +15,6 @@
     - name: Install cli programs
       ansible.builtin.package:
         name:
-          - fd-find
           - fzf
           - stow
 
@@ -59,5 +58,22 @@
           - "{{ lookup('env', 'CARGO_HOME') }}/bin/cargo"
           - "install"
           - "eza"
+          - "fd-find"
+          - "hyperfine"
+          - "feroxbuster"
       changed_when: false
 
+    - name: Download uv installer
+      ansible.builtin.get_url:
+        url: "https://astral.sh/uv/install.sh"
+        dest: "/tmp/uv-installer.sh"
+        mode: "0777"
+      changed_when: false
+      tags:
+        - python
+
+    - name: Install uv
+      ansible.builtin.shell: /tmp/uv-installer.sh
+      changed_when: false
+      tags:
+        - python
