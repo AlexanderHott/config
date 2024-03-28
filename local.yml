@@ -24,7 +24,7 @@
         mode: "0755"
 
     - name: Check if Rustup is installed
-      ansible.builtin.command: rustup --version
+      ansible.builtin.command: "{{ lookup('env', 'HOME') }}/.cargo/bin/rustup --version"
       register: rustup_check
       ignore_errors: true
       changed_when: false
