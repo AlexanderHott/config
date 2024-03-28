@@ -24,7 +24,7 @@
         mode: "0755"
 
     - name: Check if Rustup is installed
-      ansible.builins.command: rustup --version
+      ansible.builtins.command: rustup --version
       register: rustup_check
       ignore_errors: true
 
