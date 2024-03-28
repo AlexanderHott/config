@@ -1,0 +1,40 @@
+---
+- name: Config
+  hosts: localhost
+  connection: local
+  become: true # sudo
+
+  tasks:
+    - name: Install dependencies
+      ansible.builtin.package:
+        name:
+          - git
+          - gcc
+
+    - name: Install cli programs
+      ansible.builtin.package:
+        name:
+          - fzf
+          - stow
+
+    - name: Install latest neovim
+      ansible.builtin.get_url:
+        url: "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
+        dest: "~/.local/bin/nvim"
+        mode: "0755"
+
+    - name: Check if Rustup is installed
+      ansible.builins.command: rustup --version
+      register: rustup_check
+      ignore_errors: true
+
+    - name: Install Rustup if not installed
+      become: true
+      ansible.builtins.command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      when: rustup_check.rc != 0
+      register: rustup_install_output
+
+    - name: Print installation output
+      ansible.builtins.debug:
+        msg: "{{ rustup_install_output.stdout }}"
+      when: rustup_install_output is defined and rustup_install_output.stdout is defined
