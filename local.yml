@@ -1,6 +1,6 @@
 ---
 - name: Config
-  hosts: all
+  hosts: localhost
   connection: local
   become: true # sudo
 
@@ -23,15 +23,15 @@
         dest: "~/.local/bin/nvim"
         mode: "0755"
 
-    # - name: Check if Rustup is installed
-    #   ansible.builtin.command: rustup --version
-    #   register: rustup_check
-    #   ignore_errors: true
-    #   changed_when: false
-    #
-    # - name: Debug output of rustup_check
-    #   ansible.builtin.debug:
-    #     var: rustup_check
+    - name: Check if Rustup is installed
+      ansible.builtin.command: rustup --version
+      register: rustup_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Debug output of rustup_check
+      ansible.builtin.debug:
+        var: rustup_check
     #
     # - name: Install Rustup if not installed
     #   become: true
