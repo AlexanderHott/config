@@ -1,0 +1,19 @@
+---
+- name: Bootstrap development environment
+  hosts: localhost
+
+  tasks:
+    - name: Install packages with apt
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - tmux
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+
+    - name: Neovim
+      tags: nvim
+      ansible.builtin.import_role:
+        name: nvim
