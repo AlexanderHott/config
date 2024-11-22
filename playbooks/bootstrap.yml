@@ -1,4 +1,3 @@
----
 - name: Bootstrap development environment
   hosts: localhost
 
@@ -12,8 +11,14 @@
         state: present
       when: ansible_distribution == "Ubuntu"
 
-
     - name: Neovim
-      tags: nvim
       ansible.builtin.import_role:
         name: nvim
+
+    - name: GitHub CLI
+      ansible.builtin.import_role:
+        name: gh
+
+    - name: 1Password
+      ansible.builtin.import_role:
+        name: onepassword

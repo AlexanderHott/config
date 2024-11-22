@@ -1,8 +1,4 @@
 ---
-- name: Define the desired Neovim version
-  ansible.builtin.set_fact:
-    nvim_version: "0.10.2"
-
 - name: Check if the desired Neovim version is installed
   ansible.builtin.command: "/usr/local/bin/nvim --version"
   register: nvim_version_check

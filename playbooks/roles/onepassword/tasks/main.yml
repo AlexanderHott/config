@@ -1,0 +1,4 @@
+---
+- name: Install 1passwor in Ubuntu
+  ansible.builtin.include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"

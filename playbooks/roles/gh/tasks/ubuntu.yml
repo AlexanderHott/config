@@ -1,0 +1,45 @@
+---
+- name: Check if the GitHub CLI is installed
+  ansible.builtin.command: "gh --version"
+  register: gh_version_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Determine if installation is needed
+  ansible.builtin.set_fact:
+    install_gh: "{{ gh_version_check.rc != 0 }}"
+
+- name: Create /etc/apt/keyrings directory with correct permissions
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  when: install_gh
+
+- name: Download GitHub CLI keyring
+  ansible.builtin.get_url:
+    url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+    dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    mode: '0644'
+  when: install_gh
+
+- name: Add GitHub CLI repository
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/github-cli.list
+    line: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+    mode: '0644'
+    create: true
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_gh
+
+- name: Update APT package index
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+  when: install_gh
+
+- name: Install or update GitHub CLI
+  ansible.builtin.apt:
+    name: gh
+    state: present

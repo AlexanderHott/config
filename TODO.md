@@ -16,8 +16,8 @@
 - [ ] elixir
 - [ ] fd-find
 - [ ] gcc
-- [ ] git
-- [ ] github cli
+- [x] git
+- [x] github cli
 - [ ] glow  
 - [ ] just
 - [ ] nasm
@@ -30,7 +30,8 @@
 - [ ] sqlite3
 - [ ] stow
 - [ ] tldr
-- [ ] valgrind
+- [x] tmux
+- [ ] valgrind/tsan/asan
 - [ ] vim
 - [ ] whois
 - [ ] wireshark

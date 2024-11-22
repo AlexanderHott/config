@@ -1,0 +1,78 @@
+---
+- name: Check if 1Password is installed
+  ansible.builtin.command: "1password --version"
+  register: onepassword_version_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Determine if installation is needed
+  ansible.builtin.set_fact:
+    install_onepassword: "{{ onepassword_version_check.rc != 0 }}"
+
+- name: Add 1Password GPG key
+  ansible.builtin.get_url:
+    url: https://downloads.1password.com/linux/keys/1password.asc
+    dest: /usr/share/keyrings/1password-archive-keyring.gpg
+    mode: '0644'
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Add 1Password repository
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/1password.list
+    line: "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main"
+    mode: '0644'
+    create: true
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Add debsig-verify policy directory
+  ansible.builtin.file:
+    path: /etc/debsig/policies/AC2D62742012EA22/
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Download and add debsig-verify policy
+  ansible.builtin.get_url:
+    url: https://downloads.1password.com/linux/debian/debsig/1password.pol
+    dest: /etc/debsig/policies/AC2D62742012EA22/1password.pol
+    mode: '0644'
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Add debsig keyring directory
+  ansible.builtin.file:
+    path: /usr/share/debsig/keyrings/AC2D62742012EA22/
+    state: directory
+    mode: '0755'
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Add debsig keyring
+  ansible.builtin.get_url:
+    url: https://downloads.1password.com/linux/keys/1password.asc
+    dest: /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+    mode: '0644'
+  become: true
+  become_method: ansible.builtin.sudo
+  when: install_onepassword
+
+- name: Update APT package index
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+  when: install_onepassword
+
+- name: Install or update 1Password
+  ansible.builtin.apt:
+    name: 1password
+    state: present
+  become: true
+  when: install_onepassword
