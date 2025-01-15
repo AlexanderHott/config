@@ -14,7 +14,7 @@ ansible pull -U https://github.com/AlexanderHott/config --ask-become-pass
 ## Local
 
 ```
-ansible-playbook local.yml
+ansible-playbook playbooks/bootstrap.yml -K
 ```
 
 ---

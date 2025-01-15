@@ -13,7 +13,7 @@
   ansible.builtin.get_url:
     url: https://downloads.1password.com/linux/keys/1password.asc
     dest: /usr/share/keyrings/1password-archive-keyring.gpg
-    mode: '0644'
+    mode: "0644"
   become: true
   become_method: ansible.builtin.sudo
   when: install_onepassword
@@ -22,7 +22,7 @@
   ansible.builtin.lineinfile:
     path: /etc/apt/sources.list.d/1password.list
     line: "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main"
-    mode: '0644'
+    mode: "0644"
     create: true
   become: true
   become_method: ansible.builtin.sudo
@@ -32,7 +32,7 @@
   ansible.builtin.file:
     path: /etc/debsig/policies/AC2D62742012EA22/
     state: directory
-    mode: '0755'
+    mode: "0755"
   become: true
   become_method: ansible.builtin.sudo
   when: install_onepassword
@@ -41,7 +41,7 @@
   ansible.builtin.get_url:
     url: https://downloads.1password.com/linux/debian/debsig/1password.pol
     dest: /etc/debsig/policies/AC2D62742012EA22/1password.pol
-    mode: '0644'
+    mode: "0644"
   become: true
   become_method: ansible.builtin.sudo
   when: install_onepassword
@@ -50,7 +50,7 @@
   ansible.builtin.file:
     path: /usr/share/debsig/keyrings/AC2D62742012EA22/
     state: directory
-    mode: '0755'
+    mode: "0755"
   become: true
   become_method: ansible.builtin.sudo
   when: install_onepassword
@@ -59,7 +59,7 @@
   ansible.builtin.get_url:
     url: https://downloads.1password.com/linux/keys/1password.asc
     dest: /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
-    mode: '0644'
+    mode: "0644"
   become: true
   become_method: ansible.builtin.sudo
   when: install_onepassword

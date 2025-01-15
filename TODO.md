@@ -2,23 +2,23 @@
 
 ## `apt`
 
-- [ ] 1password
-- [ ] avrdude
-- [ ] brave 
-- [ ] btop
-- [ ] build-essential
-- [ ] checksec
-- [ ] clang
-- [ ] cloc
-- [ ] cmake
-- [ ] curl
+- [x] 1password
+- [x] avrdude
+- [x] brave
+- [x] btop
+- [x] build-essential
+- [x] checksec
+- [x] clang
+- [x] cloc
+- [x] cmake
+- [x] curl
 - [ ] docker
 - [ ] elixir
 - [ ] fd-find
 - [ ] gcc
 - [x] git
 - [x] github cli
-- [ ] glow  
+- [ ] glow
 - [ ] just
 - [ ] nasm
 - [ ] ncdu
@@ -72,5 +72,3 @@
 - [ ] bun
 - [ ] pnpm
 - [ ] rust
-
-

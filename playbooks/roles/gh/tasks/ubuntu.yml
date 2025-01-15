@@ -13,21 +13,21 @@
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
-    mode: '0755'
+    mode: "0755"
   when: install_gh
 
 - name: Download GitHub CLI keyring
   ansible.builtin.get_url:
     url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
     dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
-    mode: '0644'
+    mode: "0644"
   when: install_gh
 
 - name: Add GitHub CLI repository
   ansible.builtin.lineinfile:
     path: /etc/apt/sources.list.d/github-cli.list
     line: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
-    mode: '0644'
+    mode: "0644"
     create: true
   become: true
   become_method: ansible.builtin.sudo

@@ -2,10 +2,25 @@
   hosts: localhost
 
   tasks:
+    - name: Apt Update and Upgade
+      become: true
+      ansible.builtin.apt:
+        upgrade: true
+        update_cache: true
+        cache_valid_time: 57600
+
     - name: Install packages with apt
       become: true
       ansible.builtin.apt:
         name:
+          - avrdude
+          - btop
+          - build-essential
+          - checksec
+          - clang
+          - cloc
+          - cmake
+          - curl
           - git
           - tmux
         state: present
@@ -14,6 +29,10 @@
     - name: Neovim
       ansible.builtin.import_role:
         name: nvim
+
+    - name: Ghostty
+      ansible.builtin.import_role:
+        name: ghostty
 
     - name: GitHub CLI
       ansible.builtin.import_role:

@@ -18,7 +18,7 @@
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.local/src/neovim/"
     state: directory
-    mode: '0755'
+    mode: "0755"
   when: install_nvim
 
 - name: Clone Neovim repository if not already cloned

@@ -1,0 +1,61 @@
+---
+- name: Get the latest version of Ghostty
+  ansible.builtin.shell:
+    cmd: >
+      git ls-remote --tags https://github.com/ghostty-org/ghostty |
+      awk '{print $2}' |
+      grep -v '\\^{}' |
+      awk -F/ '{print $NF}' |
+      sort -V |
+      tail -n 1
+  register: ghostty_version_latest_output
+  changed_when: false
+  tags:
+    - skip_ansible_lint # ansible git module can't do `ls-remote`
+
+- name: Set the latest version as a fact
+  ansible.builtin.set_fact:
+    ghostty_version_latest: "{{ ghostty_version_latest_output.stdout | regex_replace('^v', '') }}"
+
+- name: Check if the desired Ghostty version is installed
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.local/bin/ghostty --version"
+  register: ghostty_version_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Parse the installed Ghostty version
+  ansible.builtin.set_fact:
+    ghostty_version_installed: "{{ ghostty_version_check.stdout_lines[0] | regex_search('v?([0-9.]+)', '\\1') | first }}"
+  when: ghostty_version_check.rc == 0
+
+- name: Determine if Ghostty installation is needed
+  ansible.builtin.set_fact:
+    install_ghostty: "{{ ghostty_version_installed is undefined or ghostty_version_installed != ghostty_version_latest }}"
+
+- name: Ensure Ghostty source code directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/src/ghostty/"
+    state: directory
+    mode: "0755"
+  when: install_ghostty
+
+- name: Clone Ghostty repository if not already cloned
+  ansible.builtin.git:
+    repo: https://github.com/ghostty-org/ghostty
+    dest: "{{ ansible_env.HOME }}/.local/src/ghostty/"
+    version: "v{{ ghostty_version_latest }}"
+    force: true
+  when: install_ghostty
+
+- name: Build Ghostty release version
+  ansible.builtin.command:
+    cmd: "zig build -Doptimize=ReleaseFast"
+    chdir: "{{ ansible_env.HOME }}/.local/src/ghostty/"
+  when: install_ghostty
+  changed_when: false
+
+- name: Install Ghostty binary
+  ansible.builtin.command:
+    cmd: "mv {{ ansible_env.HOME }}/.local/src/ghostty/zig-out/bin/ghostty {{ ansible_env.HOME }}/.local/bin/ghostty"
+  when: install_ghostty
+  changed_when: false
