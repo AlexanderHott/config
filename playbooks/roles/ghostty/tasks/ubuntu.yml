@@ -4,7 +4,7 @@
     cmd: >
       git ls-remote --tags https://github.com/ghostty-org/ghostty |
       awk '{print $2}' |
-      grep -v '\\^{}' |
+      grep -v '\^{}' |
       awk -F/ '{print $NF}' |
       sort -V |
       tail -n 1
